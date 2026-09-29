@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -30,7 +31,13 @@ func main() {
 
 	switch command {
 	case "validate":
-		prompt.validatePrompt()
+		//prompt.validatePrompt()
+		err := prompt.validatePrompt()
+		if err != nil {
+			fmt.Println(err.Error())
+		} else {
+			fmt.Println("prompt is valid")
+		}
 	case "stats":
 		prompt.promptStats()
 	default:
@@ -48,11 +55,11 @@ func checkCommand(command string) bool {
 	return command == "validate" || command == "stats"
 }
 
-func (p Prompt) validatePrompt() bool {
+func (p Prompt) validatePrompt() error {
 	if len(strings.Fields(p.text)) <= 2 {
-		fmt.Println("error: prompt must be at least 3 words.")
-		return false
+		//fmt.Println("error: prompt must be at least 3 words.")
+		return errors.New("prompt must be at least 3 words")
 	}
-	fmt.Println("prompt is valid")
-	return true
+	//fmt.Println("prompt is valid")
+	return nil
 }
