@@ -7,6 +7,10 @@ import (
 	"unicode/utf8"
 )
 
+type Prompt struct {
+	text string
+}
+
 func main() {
 	args := os.Args
 
@@ -22,32 +26,33 @@ func main() {
 	}
 
 	command := args[1]
+	prompt := Prompt{args[2]}
+
 	switch command {
 	case "validate":
-		validatePrompt(args[2])
+		prompt.validatePrompt()
 	case "stats":
-		promptStats(args[2])
+		prompt.promptStats()
 	default:
 		fmt.Println("Unknown command")
 	}
 }
 
-func validatePrompt(prompt string) {
-
-	if len(strings.Fields(prompt)) <= 2 {
-		fmt.Println("error: prompt must be at least 3 words.")
-	} else {
-		fmt.Println("prompt is valid")
-	}
-
-}
-
-func promptStats(prompt string) {
-	fmt.Println("Prompt: ", prompt)
-	fmt.Println("Words: ", len(strings.Fields(prompt)))
-	fmt.Println("Characters: ", utf8.RuneCountInString(prompt))
+func (p Prompt) promptStats() {
+	fmt.Println("Prompt: ", p.text)
+	fmt.Println("Words: ", len(strings.Fields(p.text)))
+	fmt.Println("Characters: ", utf8.RuneCountInString(p.text))
 }
 
 func checkCommand(command string) bool {
 	return command == "validate" || command == "stats"
+}
+
+func (p Prompt) validatePrompt() bool {
+	if len(strings.Fields(p.text)) <= 2 {
+		fmt.Println("error: prompt must be at least 3 words.")
+		return false
+	}
+	fmt.Println("prompt is valid")
+	return true
 }
