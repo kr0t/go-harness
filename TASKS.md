@@ -84,7 +84,7 @@
 [Go by Example — Methods](https://gobyexample.com/methods),
 [Error handling and Go](https://go.dev/blog/error-handling-and-go).
 
-## №3 — package `prompt` и unit-тесты (`backlog`)
+## №3 — package `prompt` и unit-тесты (`in progress`)
 
 ### Утро — выделение package
 
@@ -109,9 +109,9 @@
 
 Критерии готовности:
 
-- [ ] `main` отвечает только за CLI и отображение результата;
-- [ ] package `prompt` не вызывает `fmt.Print*`;
-- [ ] ошибки валидации передаются через `error`;
+- [x] `main` отвечает только за CLI и отображение результата;
+- [x] package `prompt` не вызывает `fmt.Print*`;
+- [x] ошибки валидации передаются через `error`;
 - [ ] есть table-driven tests для валидации и статистики;
 - [ ] проходят `gofmt -w .`, `go vet ./...`, `go test ./...` и
   `go test -v ./...`.

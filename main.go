@@ -25,7 +25,7 @@ func main() {
 
 	switch command {
 	case "validate":
-		_, err := p.ValidatePrompt()
+		err := p.ValidatePrompt()
 		if err != nil {
 			fmt.Println(err.Error())
 		} else {
@@ -37,6 +37,8 @@ func main() {
 		fmt.Println("Characters: ", s.Characters)
 		fmt.Println("Words: ", s.Words)
 		fmt.Println("Valid: ", s.Valid)
+	default:
+		fmt.Println("Unknown command!")
 	}
 }
 

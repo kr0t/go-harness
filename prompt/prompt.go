@@ -18,19 +18,19 @@ type PromptStats struct {
 }
 
 func (p Prompt) Stats() PromptStats {
-	valid, _ := p.ValidatePrompt()
+	valid := p.ValidatePrompt()
 	return PromptStats{
 		Prompt:     p.Text,
 		Words:      len(strings.Fields(p.Text)),
 		Characters: utf8.RuneCountInString(p.Text),
-		Valid:      valid,
+		Valid:      valid == nil,
 	}
 
 }
 
-func (p Prompt) ValidatePrompt() (bool, error) {
+func (p Prompt) ValidatePrompt() error {
 	if len(strings.Fields(p.Text)) <= 2 {
-		return false, errors.New("prompt must be at least 3 words")
+		return errors.New("prompt must be at least 3 words")
 	}
-	return true, nil
+	return nil
 }
