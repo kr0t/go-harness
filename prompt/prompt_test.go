@@ -97,16 +97,24 @@ func TestPromptStats(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			p := prompt.Prompt{Text: tt.text}
 
-			err := p.ValidatePrompt()
-			//s := p.Stats()
+			got := p.Stats()
 
-			if (err != nil) != tt.wantValid {
-				t.Errorf(
-					"StatPrompt() error = %v, wantErr %v",
-					err,
-					tt.wantValid,
-				)
+			if got.Prompt != tt.text {
+				t.Errorf("Stats().Prompt = %q, want %q", got.Prompt, tt.text)
 			}
+
+			if got.Words != tt.wantWords {
+				t.Errorf("Stats().Words = %d, want %d", got.Words, tt.wantWords)
+			}
+
+			if got.Characters != tt.wantCharacters {
+				t.Errorf("Stats().Characters = %d, want %d", got.Characters, tt.wantCharacters)
+			}
+
+			if got.Valid != tt.wantValid {
+				t.Errorf("Stats().Valid = %q, want %q", got.Prompt, tt.text)
+			}
+
 		})
 	}
 }
