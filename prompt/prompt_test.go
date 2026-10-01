@@ -112,7 +112,7 @@ func TestPromptStats(t *testing.T) {
 			}
 
 			if got.Valid != tt.wantValid {
-				t.Errorf("Stats().Valid = %q, want %q", got.Prompt, tt.text)
+				t.Errorf("Stats().Valid = %v, want %v", got.Valid, tt.wantValid)
 			}
 
 		})
