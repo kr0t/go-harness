@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"promtctl/prompt"
@@ -26,10 +27,14 @@ func main() {
 	switch command {
 	case "validate":
 		err := p.ValidatePrompt()
-		if err != nil {
-			fmt.Println(err.Error())
-		} else {
-			fmt.Println("prompt is valid")
+		if errors.Is(err, prompt.ErrEmptyPrompt) {
+			fmt.Println(prompt.ErrEmptyPrompt.Error())
+		}
+		if errors.Is(err, prompt.ErrPromptTooShort) {
+			fmt.Println(prompt.ErrPromptTooShort.Error())
+		}
+		if err == nil {
+			fmt.Println("Prompt valid")
 		}
 	case "stats":
 		s := p.Stats()

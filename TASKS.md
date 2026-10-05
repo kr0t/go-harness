@@ -3,6 +3,9 @@
 Этот файл — источник истины для заданий трека. Новые утренние и вечерние
 итерации добавляются сюда; после проверки кода обновляются статусы и чекбоксы.
 
+Последняя синхронизация: 2 октября 2026 года —
+[опубликованная сессия трека](https://chatgpt.com/share/6abecd67-f0dc-83ed-b668-68096c682200).
+
 Статусы:
 
 - `done` — задание выполнено;
@@ -84,9 +87,9 @@
 [Go by Example — Methods](https://gobyexample.com/methods),
 [Error handling and Go](https://go.dev/blog/error-handling-and-go).
 
-## №3 — package `prompt` и unit-тесты (`in progress`)
+## №3 — package `prompt` и unit-тесты (`done`)
 
-### Утро — выделение package
+### Утро — выделение package (`done`)
 
 Требования:
 
@@ -96,7 +99,7 @@
 - определить явный API статистики со счётчиками слов и Unicode-символов;
 - не допустить зависимости package `prompt` от терминала.
 
-### Вечер — table-driven tests
+### Вечер — table-driven tests (`done`)
 
 Требования:
 
@@ -112,30 +115,72 @@
 - [x] `main` отвечает только за CLI и отображение результата;
 - [x] package `prompt` не вызывает `fmt.Print*`;
 - [x] ошибки валидации передаются через `error`;
-- [ ] есть table-driven tests для валидации и статистики;
-- [ ] проходят `gofmt -w .`, `go vet ./...`, `go test ./...` и
+- [x] есть table-driven tests для валидации и статистики;
+- [x] проходят `gofmt -w .`, `go vet ./...`, `go test ./...` и
   `go test -v ./...`.
 
 Документация: [package `testing`](https://pkg.go.dev/testing),
 [Strings, bytes, runes and characters in Go](https://go.dev/blog/strings),
 [Error handling and Go](https://go.dev/blog/error-handling-and-go).
 
-## №4 — HTTP-клиент (`backlog`)
+## №4 — типизированные ошибки валидации (`backlog`)
 
-### Утро — первый package `client`
+### Вечер — категории ошибок и wrapping
+
+Требования:
+
+- различать программно минимум две причины ошибки: пустой prompt и prompt короче
+  трёх слов;
+- использовать sentinel errors или собственный тип ошибки;
+- не определять причину через сравнение `err.Error()`;
+- добавить контекст на уровень выше через `fmt.Errorf` и `%w`, не уничтожая
+  исходную причину;
+- определять исходную категорию после wrapping через `errors.Is` или
+  `errors.As`;
+- расширить table-driven tests сценариями:
+  `"Explain RAG architecture"`, `"Explain RAG"`, `""`, `"       "` и
+  `"Объясни архитектуру RAG"`;
+- проверять в тестах не только наличие ошибки, но и её категорию.
+
+Критерии готовности:
+
+- [ ] `Prompt.ValidatePrompt()` возвращает `error`;
+- [ ] empty и too-short ошибки различимы программно;
+- [ ] логика не сравнивает текст `err.Error()`;
+- [ ] wrapping выполнен через `%w`;
+- [ ] исходная причина находится после wrapping через `errors.Is` или
+  `errors.As`;
+- [ ] тесты table-driven и включают Unicode prompt;
+- [ ] package `prompt` ничего не печатает;
+- [ ] проходят `gofmt -w .`, `go vet ./...`, `go test -v ./...` и
+  `go test -race ./...`.
+
+Документация: [Working with Errors in Go 1.13](https://go.dev/blog/go1.13-errors),
+[`errors`](https://pkg.go.dev/errors),
+[`fmt.Errorf`](https://pkg.go.dev/fmt#Errorf).
+
+## №5 — HTTP-клиент (`backlog`)
+
+### Утро — первый package `client` (`backlog`)
 
 Требования:
 
 - добавить команду `send` и отдельный package `client`;
+- представить конфигурацию клиента структурой, содержащей адрес сервера;
 - отправлять `POST` с JSON вида `{"prompt":"..."}` через стандартную
   библиотеку;
+- представить request Go-структурой с JSON tag, не собирать JSON строками;
 - передавать endpoint через конфигурацию, не зашивать URL в `Send`;
 - устанавливать `Content-Type: application/json`;
 - закрывать `response.Body` через `defer`;
 - передавать HTTP- и transport errors вызывающему коду;
-- тестировать без настоящего LLM через `httptest.Server`.
+- не использовать внутри `client` `fmt.Println`, `log.Fatal` или `panic`;
+- тестировать без настоящего LLM через `httptest.Server`;
+- проверить в тестовом server метод, `Content-Type`, валидность JSON и текст
+  prompt;
+- добавить негативный сценарий `500 Internal Server Error`.
 
-### Вечер — status codes и typed response
+### Вечер — status codes и typed response (`backlog`)
 
 Требования:
 
@@ -146,6 +191,8 @@
 - добавлять контекст к ошибкам через `fmt.Errorf` и `%w`;
 - table-driven test покрывает valid JSON, HTTP error, invalid JSON и transport
   failure; успешный тест проверяет содержимое response;
+- transport failure моделируется через уже закрытый `httptest.Server`, а не
+  случайный localhost-порт;
 - дополнительная часть: включить небольшое тело HTTP-error в диагностику.
 
 Критерии готовности:
@@ -163,7 +210,7 @@
 [`net/http/httptest`](https://pkg.go.dev/net/http/httptest),
 [Working with Errors in Go 1.13](https://go.dev/blog/go1.13-errors).
 
-## №5 — OpenAI-compatible LLM client (`backlog`)
+## №6 — OpenAI-compatible LLM client (`backlog`)
 
 ### Утро — Chat Completions contract
 

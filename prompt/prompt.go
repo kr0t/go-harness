@@ -6,6 +6,11 @@ import (
 	"unicode/utf8"
 )
 
+var (
+	ErrEmptyPrompt    = errors.New("prompt empty")
+	ErrPromptTooShort = errors.New("prompt too short")
+)
+
 type Prompt struct {
 	Text string
 }
@@ -29,8 +34,13 @@ func (p Prompt) Stats() PromptStats {
 }
 
 func (p Prompt) ValidatePrompt() error {
-	if len(strings.Fields(p.Text)) <= 2 {
-		return errors.New("prompt must be at least 3 words")
+	words := strings.Fields(p.Text)
+	if len(words) == 0 {
+		return ErrEmptyPrompt
+	}
+	if len(words) < 3 {
+		return ErrPromptTooShort
 	}
 	return nil
+
 }
