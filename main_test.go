@@ -33,8 +33,8 @@ func TestProcessPrompt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			p := prompt.Prompt{Text: tt.text}
 			err := processPrompt(p)
-			if err != nil {
-				errors.Is(err, tt.wantErr)
+			if !errors.Is(err, tt.wantErr) {
+				t.Errorf("processPrompt() error = %v, want %v", err, tt.wantErr)
 			}
 		})
 	}
