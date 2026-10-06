@@ -46,7 +46,7 @@ func TestPromptValidate(t *testing.T) {
 			err := p.ValidatePrompt()
 
 			if !errors.Is(err, tt.wantErr) {
-				t.Errorf("ValidatePrompt() error = %w, want %w", err, tt.wantErr)
+				t.Errorf("ValidatePrompt() error = %v, want %v", err, tt.wantErr)
 			}
 		})
 	}
