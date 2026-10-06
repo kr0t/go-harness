@@ -1,6 +1,7 @@
 package prompt_test
 
 import (
+	"errors"
 	"promtctl/prompt"
 	"testing"
 )
@@ -9,32 +10,32 @@ func TestPromptValidate(t *testing.T) {
 	tests := []struct {
 		name    string
 		text    string
-		wantErr bool
+		wantErr error
 	}{
 		{
 			name:    "valid ASCII prompt",
 			text:    "Explain RAG architecture",
-			wantErr: false,
+			wantErr: nil,
 		},
 		{
 			name:    "two words",
 			text:    "Explain RAG",
-			wantErr: true,
+			wantErr: prompt.ErrPromptTooShort,
 		},
 		{
 			name:    "empty prompt",
 			text:    "",
-			wantErr: true,
+			wantErr: prompt.ErrEmptyPrompt,
 		},
 		{
 			name:    "only spaces",
 			text:    "      ",
-			wantErr: true,
+			wantErr: prompt.ErrEmptyPrompt,
 		},
 		{
 			name:    "valid Unicode prompt",
 			text:    "Объясни архитектуру RAG",
-			wantErr: false,
+			wantErr: nil,
 		},
 	}
 
@@ -44,12 +45,8 @@ func TestPromptValidate(t *testing.T) {
 
 			err := p.ValidatePrompt()
 
-			if (err != nil) != tt.wantErr {
-				t.Errorf(
-					"ValidatePrompt() error = %v, wantErr %v",
-					err,
-					tt.wantErr,
-				)
+			if !errors.Is(err, tt.wantErr) {
+				t.Errorf("ValidatePrompt() error = %w, want %w", err, tt.wantErr)
 			}
 		})
 	}

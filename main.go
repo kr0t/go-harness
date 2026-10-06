@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"promtctl/prompt"
@@ -26,15 +25,11 @@ func main() {
 
 	switch command {
 	case "validate":
-		err := p.ValidatePrompt()
-		if errors.Is(err, prompt.ErrEmptyPrompt) {
-			fmt.Println(prompt.ErrEmptyPrompt.Error())
-		}
-		if errors.Is(err, prompt.ErrPromptTooShort) {
-			fmt.Println(prompt.ErrPromptTooShort.Error())
-		}
-		if err == nil {
-			fmt.Println("Prompt valid")
+		err := processPrompt(p)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("prompt valid")
 		}
 	case "stats":
 		s := p.Stats()
@@ -45,6 +40,13 @@ func main() {
 	default:
 		fmt.Println("Unknown command!")
 	}
+}
+
+func processPrompt(p prompt.Prompt) error {
+	if err := p.ValidatePrompt(); err != nil {
+		return fmt.Errorf("validate prompt: %w", err)
+	}
+	return nil
 }
 
 func checkCommand(command string) bool {
