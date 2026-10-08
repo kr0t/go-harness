@@ -123,9 +123,9 @@
 [Strings, bytes, runes and characters in Go](https://go.dev/blog/strings),
 [Error handling and Go](https://go.dev/blog/error-handling-and-go).
 
-## №4 — типизированные ошибки валидации (`backlog`)
+## №4 — типизированные ошибки валидации (`done`)
 
-### Вечер — категории ошибок и wrapping
+### Вечер — категории ошибок и wrapping (`done`)
 
 Требования:
 
@@ -144,16 +144,21 @@
 
 Критерии готовности:
 
-- [ ] `Prompt.ValidatePrompt()` возвращает `error`;
-- [ ] empty и too-short ошибки различимы программно;
-- [ ] логика не сравнивает текст `err.Error()`;
-- [ ] wrapping выполнен через `%w`;
-- [ ] исходная причина находится после wrapping через `errors.Is` или
+- [x] `Prompt.ValidatePrompt()` возвращает `error`;
+- [x] empty и too-short ошибки различимы программно;
+- [x] логика не сравнивает текст `err.Error()`;
+- [x] wrapping выполнен через `%w`;
+- [x] исходная причина находится после wrapping через `errors.Is` или
   `errors.As`;
-- [ ] тесты table-driven и включают Unicode prompt;
-- [ ] package `prompt` ничего не печатает;
-- [ ] проходят `gofmt -w .`, `go vet ./...`, `go test -v ./...` и
+- [x] тесты table-driven и включают Unicode prompt;
+- [x] package `prompt` ничего не печатает;
+- [x] проходят `gofmt -w .`, `go vet ./...`, `go test -v ./...` и
   `go test -race ./...`.
+
+Проверка `origin/main` (`6ae5aa5`), 6 октября 2026 года: все требования выполнены,
+форматирование, vet и тесты (включая race) проходят. `TestProcessPrompt` проверяет
+empty, too-short и успешный сценарий. При замене `%w` на `%v` во временной копии
+тесты ошибок падают, подтверждая проверку сохранения исходной категории.
 
 Документация: [Working with Errors in Go 1.13](https://go.dev/blog/go1.13-errors),
 [`errors`](https://pkg.go.dev/errors),

@@ -37,6 +37,13 @@ func main() {
 		fmt.Println("Characters: ", s.Characters)
 		fmt.Println("Words: ", s.Words)
 		fmt.Println("Valid: ", s.Valid)
+	case "send":
+		err := processPrompt(p)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+
+		}
 	default:
 		fmt.Println("Unknown command!")
 	}
@@ -50,5 +57,5 @@ func processPrompt(p prompt.Prompt) error {
 }
 
 func checkCommand(command string) bool {
-	return command == "validate" || command == "stats"
+	return command == "validate" || command == "stats" || command == "send"
 }
