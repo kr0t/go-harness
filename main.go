@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"promtctl/client"
 	"promtctl/prompt"
 )
 
@@ -41,9 +42,19 @@ func main() {
 		err := processPrompt(p)
 		if err != nil {
 			fmt.Println(err)
-		} else {
-
+			return
 		}
+		endpoint := os.Getenv("HARNESS_ENDPOINT")
+		if endpoint == "" {
+			fmt.Println("harness endpoint is required")
+			return
+		}
+		c := client.Client{Endpoint: endpoint}
+		if err := c.Send(p.Text); err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("prompt sent")
 	default:
 		fmt.Println("Unknown command!")
 	}

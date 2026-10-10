@@ -1,8 +1,10 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -10,22 +12,35 @@ var (
 	ErrInvalidJSON = errors.New("unable marshal to JSON")
 )
 
-type ServerConfig struct {
-	endpoint string
+type Request struct {
+	Prompt string `json:"prompt"`
 }
 
-type Message struct {
-	text string
+type Client struct {
+	Endpoint string
 }
 
-func (m Message) toJSON() ([]byte, error) {
-	j, err := json.Marshal(m.text)
+func (c Client) Send(text string) error {
+	req := Request{Prompt: text}
+	j, err := json.Marshal(req)
 	if err != nil {
-		return nil, ErrInvalidJSON
+		return ErrInvalidJSON
 	}
-	return j, nil
-}
+	request, err := http.NewRequest("POST", c.Endpoint, bytes.NewReader(j))
+	if err != nil {
+		return fmt.Errorf("create request: %w", err)
+	}
+	request.Header.Set("Content-Type", "application/json")
+	httpClient := &http.Client{}
+	response, err := httpClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("create request: %w", err)
+	}
 
-func Send(text string) {
-	http.Get(ServerConfig)
+	defer response.Body.Close()
+
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return fmt.Errorf("send request unexpected HTTP status %s", response.Status)
+	}
+	return nil
 }
