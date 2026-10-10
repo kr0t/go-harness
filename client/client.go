@@ -3,13 +3,8 @@ package client
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
-)
-
-var (
-	ErrInvalidJSON = errors.New("unable marshal to JSON")
 )
 
 type Request struct {
