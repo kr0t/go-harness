@@ -24,7 +24,7 @@ func (c Client) Send(text string) error {
 	req := Request{Prompt: text}
 	j, err := json.Marshal(req)
 	if err != nil {
-		return ErrInvalidJSON
+		return fmt.Errorf("encode request: %w", err)
 	}
 	request, err := http.NewRequest("POST", c.Endpoint, bytes.NewReader(j))
 	if err != nil {
@@ -34,7 +34,7 @@ func (c Client) Send(text string) error {
 	httpClient := &http.Client{}
 	response, err := httpClient.Do(request)
 	if err != nil {
-		return fmt.Errorf("create request: %w", err)
+		return fmt.Errorf("send request: %w", err)
 	}
 
 	defer response.Body.Close()

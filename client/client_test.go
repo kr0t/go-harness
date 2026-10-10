@@ -52,7 +52,9 @@ func TestClientSendSuccess(t *testing.T) {
 
 func TestClientSendHTTPError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {},
+		func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusInternalServerError)
+		},
 	))
 	t.Cleanup(server.Close)
 
